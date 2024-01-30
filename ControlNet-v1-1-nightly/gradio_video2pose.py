@@ -19,12 +19,13 @@ def video2pose(fps, source_video):
     output_path = "./pose.mp4"
     orig_fps = get_fps(source_video)
     frames = read_frames(source_video)
-    frames = read_frames(source_video)
     kps_results = []
+    total = len(frames)
     for i, frame_pil in enumerate(frames):
         frame_pil = np.array(frame_pil, dtype=np.uint8)
         frame_pil = HWC3(frame_pil)
         frame_pil = resize_image(frame_pil, 512)
+        print(f'{i}/{total}')
         result= detector(frame_pil)
         result = HWC3(result)
         img = resize_image(frame_pil, 512)
@@ -36,7 +37,6 @@ def video2pose(fps, source_video):
         kps_results.append(result)
 
     save_videos_from_pil(kps_results, output_path, fps=orig_fps)
-    print(orig_fps)
     if (int(orig_fps) != fps):
         clip = VideoFileClip(output_path)
         new_clip = clip.set_fps(fps)
@@ -51,6 +51,6 @@ app = gr.Interface(
     inputs=[gr.Number(value=20, label="fps"), gr.Video()],
     outputs=[gr.Video()],
     description="Tranform video to pose video"
-)
+).queue()
 
-app.launch(share=True)
+app.launch(server_name='0.0.0.0', share=True)
