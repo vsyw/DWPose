@@ -53,7 +53,7 @@ app = gr.Interface(
     inputs=[
         gr.Number(value=20, label="fps"),
         gr.Checkbox(label="withFace", value=False),
-        gr.Video(),
+        gr.Video(type="filepath"),
     ],
     outputs=[gr.Video()],
     description="Tranform video to pose video",
